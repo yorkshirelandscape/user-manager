@@ -1,0 +1,152 @@
+:root {
+	--party-overview-min-height: 78px;
+	--party-overview-min-width: 500px;
+}
+
+div.user-manager-window {
+	min-height: var(--user-manager-min-height);
+	min-width: var(--user-manager-min-width);
+}
+
+div.user-manager-window nav.tabs {
+	display: flex;
+	flex-direction: row;
+}
+
+div.user-manager-window nav li {
+	display: inline-block;
+	list-style-type: none;
+}
+
+div.user-manager-window nav .item {
+	color: gray;
+}
+
+div.user-manager-window nav .item.active {
+	color: black;
+	border-bottom: 2px solid #782e22;
+	text-shadow: none;
+}
+
+div.user-manager-window .table-row {
+	color: black;
+	display: flex;
+	display: -webkit-flex;
+	flex-direction: row;
+	-webkit-flex-direction: row;
+	flex-grow: 0;
+	-webkit-flex-grow: 0;
+	flex-wrap: wrap;
+	-webkit-flex-wrap: wrap;
+	width: 100%;
+}
+
+div.user-manager-window .table-row span.note {
+	font-size: 0.6rem;
+	color: green;
+	font-weight: bold;
+	line-height: 18pt;
+}
+
+div.user-manager-window .table-row span.adjusted {
+	color: green;
+	font-weight: bold;
+}
+
+div.user-manager-window .table-row:nth-child(2n) {
+	background-color: rgb(228, 228, 228);
+}
+
+div.user-manager-window .table-row .text {
+	margin: auto;
+	flex-grow: 2;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	padding-left: 5px;
+	flex-basis: 50px;
+}
+
+div.user-manager-window .table-row .text.icon {
+	text-align: center;
+}
+
+div.user-manager-window .table-row .text.background {
+	white-space: pre-wrap;
+	text-align: left;
+	vertical-align: top;
+}
+
+div.user-manager-window .table-row .num {
+	margin: auto;
+	text-align: center;
+	flex-basis: 50px;
+	flex-grow: 0;
+	flex-shrink: 1;
+}
+
+div.user-manager-window .table-row .widenum {
+	margin: auto;
+	text-align: center;
+	flex-basis: 75px;
+	flex-grow: 0;
+	flex-shrink: 1;
+}
+
+div.user-manager-window .table-row .button {
+	margin: auto;
+	text-align: center;
+	flex-basis: 45px;
+	flex-grow: 0;
+	flex-shrink: 1;
+}
+
+div.user-manager-window .table-row.header .button:not(:first-child) {
+	flex-basis: 27px;
+}
+
+button.btn-filter,
+button.btn-toggle-visibility {
+	line-height: initial;
+	padding: 2px;
+}
+
+/*
+  * General good-look styles, not mandatory.
+  */
+
+div.user-manager-window .table-row {
+	border-bottom: 1px solid rgb(190, 190, 190);
+	border-collapse: collapse;
+	padding: 4px;
+}
+
+div.user-manager-window .table-row.header {
+	font-weight: bold;
+}
+
+
+/* Buttons */
+button.user-manager-button {
+	flex-basis: 100%;
+}
+
+.user-manager-window.pf2e .proficiencies.tab .header .num,
+
+.user-manager-no-ellipsis,
+div.user-manager-window .table-row .text.user-manager-no-ellipsis,
+div.user-manager-window .table-row .text.icon.user-manager-no-ellipsis,
+div.user-manager-window .table-row .num.user-manager-no-ellipsis {
+	overflow: visible;
+	white-space: normal;
+	text-overflow: clip;
+}
+
+.user-manager-ellipsis,
+div.user-manager-window .table-row .text.user-manager-ellipsis,
+div.user-manager-window .table-row .text.icon.user-manager-ellipsis,
+div.user-manager-window .table-row .num.user-manager-ellipsis {
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: clip;
+}

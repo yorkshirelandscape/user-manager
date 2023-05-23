@@ -1,0 +1,20 @@
+<div>
+# 	{{> "modules/user-manager/templates/parts/Tabs.html"}}
+    <section class="content">
+        <div class="tab" data-tab="general" data-group="party">
+            <div class="table-row header">
+                <div class="text">Type</div>
+                <div class="text">Folder</div>
+                # <div class="text">Character</div>
+                # <div class="text">Owner</div>
+            </div>
+
+            {{#each folders as | folder | }}
+            <div class="table-row">
+                <div class="text">{{ folder.type }}</div>
+                <div class="text">{{ folder.name }}</div>
+            </div>
+            {{/each}}
+        </div>
+    </section>
+</div>
