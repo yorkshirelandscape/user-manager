@@ -1,6 +1,6 @@
 :root {
-	--party-overview-min-height: 78px;
-	--party-overview-min-width: 500px;
+	--user-manager-min-height: 78px;
+	--user-manager-min-width: 600px;
 }
 
 div.user-manager-window {
@@ -131,7 +131,7 @@ button.user-manager-button {
 	flex-basis: 100%;
 }
 
-.user-manager-window.pf2e .proficiencies.tab .header .num,
+.user-manager-window .proficiencies.tab .header .num,
 
 .user-manager-no-ellipsis,
 div.user-manager-window .table-row .text.user-manager-no-ellipsis,

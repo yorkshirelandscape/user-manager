@@ -3,6 +3,7 @@ class UserManagerApp extends Application {
 		super(options);
 		
 		this.state = {};
+		this.activeTab = "active";
 		this.rendering = false;
 	}
 
@@ -22,18 +23,25 @@ class UserManagerApp extends Application {
 		        });
 		});
 		// actors = actors.filter((playerActor) => users.map((u) => u.character ).includes(playerActor.id));
+
+		let tabs = {
+			active: { id: "active",  label: 'Active', visible: true },
+			archive: { id: "archive", label: 'Archive', visible: true }
+			 };
 		
 		this.state = {
-			actors: actors
+			activeTab: this.activeTab,
+			actors: actors,
+			tabs
 		};
 		let r = document.querySelector(":root");
-		r.style.setProperty("--party-overview-min-width", '500px');
-		r.style.setProperty("--party-overview-min-height", `${78 + 33 * actors.length}px`);
+		r.style.setProperty("--user-manager-min-width", '600px');
+		r.style.setProperty("--user-manager-min-height", `${78 + 33 * actors.length}px`);
 	}
 
 	static get defaultOptions() {
 		return mergeObject(super.defaultOptions, {
-			width: '500px',
+			width: '600px',
 			height: "fit-content",
 			resizable: true,
 			title: "User Manager",
@@ -43,7 +51,7 @@ class UserManagerApp extends Application {
 				{
 					navSelector: ".tabs",
 					contentSelector: ".content",
-					initial: "general",
+					initial: "active",
 				},
 			],
 		});
@@ -58,7 +66,7 @@ class UserManagerApp extends Application {
 		// $(".btn-toggle-visibility").on("click", (event) => {
 			// const actorId = event.currentTarget.dataset.actor;
 			// this.hiddenActors = this.hiddenActors.includes(actorId) ? this.hiddenActors.filter((id) => id !== actorId) : [...this.hiddenActors, actorId];
-			// game.settings.set("party-overview", "hiddenActors", this.hiddenActors);
+			// game.settings.set("user-manager", "hiddenActors", this.hiddenActors);
 			// this.render(false);
 		// });
 // 

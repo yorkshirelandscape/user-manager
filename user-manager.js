@@ -1,4 +1,4 @@
-import UserManagerApp from "./module/logic.js";
+import UserManagerApp from "./modules/logic.js";
 
 
 Hooks.once("init", () => {
@@ -19,11 +19,6 @@ Hooks.on("ready", () => {
 				let actors = game.userManager.getData();
 				return actors
 			});
-
-	const tabs = {
-			active: { id: "active", visible: true, label: 'Active' },
-			archive: { id: "archive", visible: true, label: 'Archive' },
-			 };
 });
 
 Hooks.on("renderActorDirectory", (app, html, data) => {

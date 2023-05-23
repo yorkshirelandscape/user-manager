@@ -1,5 +1,5 @@
 <nav class="tabs" data-group="party">
-	{{#each tabs}} {{#if this.visible}}
-	<li class="item" data-tab="{{this.id}}">{{localize this.localization}}</li>
-	{{/if}} {{/each}}
+	{{#each tabs}}
+	<li class="item" data-tab="{{this.id}}">{{this.label}}</li>
+	{{/each}}
 </nav>
