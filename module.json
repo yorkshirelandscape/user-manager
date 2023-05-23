@@ -19,7 +19,7 @@
         "minimum": "10",
 	 	"verified": "10.291"
      },
-     "scripts": ["user-manager.js"],
+     "esmodules": ["user-manager.js"],
      "styles": ["styles/user-manager.css"],
      "x-manifest": "https://github.com/yorkshirelandscape/user-manager/releases/latest/download/module.json",
      "x-download": "https://github.com/yorkshirelandscape/user-manager/releases/latest/download/user-manager.zip",
