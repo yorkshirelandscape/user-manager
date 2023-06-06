@@ -1,0 +1,46 @@
+<div class="split">
+	<div class="left">
+	    {{> "modules/user-manager/templates/parts/Tabs.html"}}
+	    <section class="content">
+	    	<!-- Active -->
+	        <div class="tab" data-tab="active" data-group="party">
+	            <div class="table-row header">
+	                <div class="text">User</div>
+	                <div class="text">Created</div>
+	                <div class="text">Modified</div>
+	                <div class="text">Group(s)</div>
+	                <div class="text">Character(s)</div>
+	            </div>
+
+	            {{#each users as | user | }}
+	            <div class="table-row">
+	                <div class="text">{{ user.identifier }}</div>
+	                <div class="text" style="font-style:italic;color:gray">{{ user.dateCreated }}</span></div>
+	                <div class="text" style="font-style:italic;color:gray">{{ user.dateModified }}</span></div>
+	                <div class="text" style="font-style:italic;color:gray">{{ user.groupNames }}</span></div>
+	                <div class="text" style="font-style:italic;color:gray">{{ user.characterNames }}</span></div>
+	            </div>
+	            {{/each}}
+	        </div>
+	        <!-- Archive -->
+	        <div class="tab" data-tab="archive" data-group="party">
+	            <div class="table-row header">
+	                <div class="text">Group</div>
+	                <div class="text">Character</div>
+	                <div class="text">Owner</div>
+	            </div>
+
+	            {{#each actors as | actor | }}
+	            <div class="table-row">
+	                <div class="text">{{ actor.userGroup }}</div>
+	                <div class="text">{{ actor.name }}</div>
+	                <div class="text">{{ actor.owner.name }}</div>
+	            </div>
+	            {{/each}}
+	        </div>
+	    </section>
+	</div>
+	<div class="right">
+		<div>This is text.</div>
+	</div>
+</div>

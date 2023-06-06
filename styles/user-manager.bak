@@ -1,14 +1,14 @@
 :root {
-	/* --user-manager-min-height: 60vh; */
-	--user-manager-min-width: 60vw; 
-	/* --user-manager-max-height: 66%; */
+	--user-manager-min-height: 78px;
+	--user-manager-min-width: 1000px;
+	--user-manager-max-height: 66%;
 }
 
 div.user-manager-window {
-	/* min-height: var(--user-manager-min-height); */
-	min-width: var(--user-manager-min-width); 
-	/* max-height: var(--user-manager-max-height); */
-	/* max-width: var(--user-manager-max-width); */
+	min-height: var(--user-manager-min-height);
+	min-width: var(--user-manager-min-width);
+	max-height: var(--user-manager-max-height);
+	max-width: var(--user-manager-max-width);
 }
 
 div.user-manager-window nav.tabs {
@@ -66,17 +66,6 @@ div.user-manager-window .table-row .text {
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
-	padding-left: 5px;
-	flex-basis: 50px;
-}
-
-div.user-manager-window .table-row .text:hover {
-	margin: auto;
-	flex-grow: 2;
-	overflow: hidden;
-	white-space: normal;
-	text-overflow: clip;
-	word-break: break-all;
 	padding-left: 5px;
 	flex-basis: 50px;
 }
@@ -173,7 +162,7 @@ div.user-manager-window .y-flex {
 }
 
 div.user-manager-window .split {
-	flex-basis: 60vh;
+	height: 60vh;
 	display: flex;
 	flex-direction: row;
 	flex-wrap: nowrap;
@@ -182,12 +171,13 @@ div.user-manager-window .split {
 
 div.user-manager-window .split .left {
   width: 60%;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
   overflow-y: scroll;
-  /* flex-grow: 3; */
-  font-size: 0.75em;
 }
 
 div.user-manager-window .split .right {
-  width: 40%; 
-  /* flex-grow: 2; */
+  width: 40%;
+  float: left;
 }
