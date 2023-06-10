@@ -35,6 +35,10 @@ class UserManagerApp extends Application {
 		users = users.map((u) => {
 			let handle = u.getFlag('user-manager','handle');
 		    let identifier = u.name + ( handle && handle !== u.name ? ` (${handle})` : '' );
+		    let fname = u.getFlag('user-manager','firstName');
+		    let lname = u.getFlag('user-manager','lastName');
+		    let email = u.getFlag('user-manager','email');
+		    let discord = u.getFlag('user-manager','discord');
 			let dateCreated = u.getFlag('user-manager','dateCreated') === null ? null : new Date(u.getFlag('user-manager','dateCreated')).toLocaleDateString();
 			let dateModified = u.getFlag('user-manager','dateModified') === null ? null : new Date(u.getFlag('user-manager','dateModified')).toLocaleDateString();
 			let groups = actors.filter((a) => a.owner.id === u.id ).map((a) => a.userGroup );
@@ -44,9 +48,14 @@ class UserManagerApp extends Application {
 			let characterNames = characters.map((c) => c.name);
 			return {
 				id: u.id,
+				role: u.role,
 				name: u.name,
 				handle: handle,
 				identifier: identifier,
+				fname: fname,
+				lname: lname,
+				email: email,
+				discord: discord,
 				dateCreated: dateCreated,
 				dateModified: dateModified,
 				groups: groups,
@@ -64,6 +73,7 @@ class UserManagerApp extends Application {
 		
 		this.state = {
 			activeTab: this.activeTab,
+			selectedUser: null,
 			actors: actors,
 			users: users,
 			tabs
@@ -93,21 +103,66 @@ class UserManagerApp extends Application {
 		});
 	}
 
+	displaySelected(selectId) {
+		if (selectId === null) {
+			document.getElementById('select-name').value = null;
+			document.getElementById('select-role').value = null;
+			document.getElementById('select-role').background = 'transparent';
+			document.getElementById('select-fname').value = null;
+			document.getElementById('select-lname').value = null;
+			document.getElementById('select-email').value = null;
+			document.getElementById('select-discord').value = null;
+			document.getElementById('select-created').innerHTML = 'Date Created';
+			document.getElementById('select-modified').innerHTML = 'Date Modified';			
+		} else {
+			let user = this.state.users.find((u) => u.id === selectId );
+			document.getElementById('select-name').value = user.name;
+			// document.getElementById('select-role').value = user.role;
+			let role = [null,'player','trusted-player','assistant-gm','gm'][user.role]
+			document.getElementById('select-role').value = role;
+			$('#select-role').attr('class', '').addClass(role);
+			document.getElementById('select-fname').value = user.fname;
+			document.getElementById('select-lname').value = user.lname;
+			document.getElementById('select-email').value = user.email;
+			document.getElementById('select-discord').value = user.discord;	
+			document.getElementById('select-created').innerHTML = (user.dateCreated ?? '&nbsp;');
+			document.getElementById('select-modified').innerHTML = (user.dateModified ?? '&nbsp;');
+			let groupArr = '';
+			Array.from(user.groups).forEach((g) => {
+				groupArr = groupArr + `<div class="table-row"><div class="text" align="right">${g.name}</div></div>`
+			})
+			document.getElementById('select-groups').innerHTML = groupArr;		
+		}
+	}
+
 	getData() {
 		this.update();
 		return this.state;
 	}
 
-	// activateListeners(html) {
-		// $(".btn-toggle-visibility").on("click", (event) => {
-			// const actorId = event.currentTarget.dataset.actor;
-			// this.hiddenActors = this.hiddenActors.includes(actorId) ? this.hiddenActors.filter((id) => id !== actorId) : [...this.hiddenActors, actorId];
-			// game.settings.set("user-manager", "hiddenActors", this.hiddenActors);
-			// this.render(false);
-		// });
-// 
-		// super.activateListeners(html);
-	// }
+	activateListeners(html) {
+		let self = this;
+
+		$(".table-row").click(function() {
+			let selectId;
+			if ($(this).hasClass('selected')) {
+				$(this).removeClass('selected');
+				selectId = null;	
+			} else {
+				$(this).addClass('selected').siblings().removeClass('selected');
+				selectId = $(this).attr('id');
+			}
+			console.log(selectId);
+			self.displaySelected(selectId);
+		});
+		
+		$('#select-role').on('change', function(ev) {
+			console.log('success');
+		    $(this).attr('class', '').addClass($(this).children(':selected').val());
+		});
+
+		super.activateListeners(html);
+	}
 
 	render(force, options) {
 		this.rendering = true;

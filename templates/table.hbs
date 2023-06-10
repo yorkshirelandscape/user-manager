@@ -13,12 +13,12 @@
 	            </div>
 
 	            {{#each users as | user | }}
-	            <div class="table-row">
-	                <div class="text">{{ user.identifier }}</div>
-	                <div class="text" style="font-style:italic;color:gray">{{ user.dateCreated }}</span></div>
-	                <div class="text" style="font-style:italic;color:gray">{{ user.dateModified }}</span></div>
-	                <div class="text" style="font-style:italic;color:gray">{{ user.groupNames }}</span></div>
-	                <div class="text" style="font-style:italic;color:gray">{{ user.characterNames }}</span></div>
+	            <div class="table-row" id="{{ user.id }}">
+	                <div class="text firstCol">{{ user.identifier }}</div>
+	                <div class="text other">{{ user.dateCreated }}</span></div>
+	                <div class="text">{{ user.dateModified }}</span></div>
+	                <div class="text">{{ user.groupNames }}</span></div>
+	                <div class="text">{{ user.characterNames }}</span></div>
 	            </div>
 	            {{/each}}
 	        </div>
@@ -41,6 +41,81 @@
 	    </section>
 	</div>
 	<div class="right">
-		<div>This is text.</div>
+		<form>
+			<div class="form-row">
+				<div class="input-field" width="60%">
+					<input type="text" id="select-name" placeholder="&nbsp;"/>
+					<label for="select-name" class="placeholder">User Name</label>
+				</div>
+				<div width="40%" class="input-field">
+					<select float="right" id="select-role">
+					    <option disabled selected value></option>
+					    <option value="player">Player</option>
+					    <option value="trusted-player">Trusted Player</option>
+					    <option value="assistant-gm">Assistant GM</option>
+					    <option value="gm">GM</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="input-field" style="max-width: 40%; margin-right: 10px">
+					<input type="text" id="select-fname" placeholder="&nbsp;"/>
+					<label for="select-fname" class="placeholder">First Name</label>
+				</div>
+				<div class="input-field" style="max-width: 40%; margin-right: auto">
+					<input type="text" id="select-lname" placeholder="&nbsp;"/>
+					<label for="select-lname" class="placeholder">Last Name</label>
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="input-field" style="width: calc(80% + 10px)">
+					<input type="text" id="select-email" placeholder="&nbsp;"/>
+					<label for="select-email" class="placeholder">Email Address</label>
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="input-field" style="width: 60%">
+					<input type="text" id="select-discord" placeholder="&nbsp;"/>
+					<label for="select-discord" class="placeholder">Discord</label>
+				</div>
+				<div>
+					<span class="label-plain" style="position: absolute; transform: translate(-50px, 35px)">Groups</span>
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="align-rt">
+					<span class="label-plain">Created:</span>
+					<span class="label-plain">Modified:</span>
+					<span class="label-plain" style="transform: translateY(23px)">Characters</span>
+				</div>
+				<div class="align-rt" style="margin-right: 10px; margin-left: 10px">
+					<span class="value-plain" id="select-created">&nbsp;</span>
+					<span class="value-plain" id="select-modified">&nbsp;</span>
+					<span>&nbsp;</span>
+				</div>
+					<div class="group-box" id="select-groups">
+				</div>
+			</div>
+			<div class="characters-boundbox">
+				<div class="characters-container" id="select-characters">
+					<div class="character-box">
+						<div class="character-img"><img src="systems/pf2e/icons/default-icons/character.svg"></div>
+						<div class="label-plain">Character</div>
+					</div>
+					<div class="character-box">
+						<div class="character-img"><img src="systems/pf2e/icons/default-icons/character.svg"></div>
+						<div class="label-plain">Character</div>
+					</div>
+					<div class="character-box">
+						<div class="character-img"><img src="systems/pf2e/icons/default-icons/character.svg"></div>
+						<div class="label-plain">Character</div>
+					</div>
+					<div class="character-box">
+						<div class="character-img"><img src="systems/pf2e/icons/default-icons/character.svg"></div>
+						<div class="label-plain">Character</div>
+					</div>
+				</div>
+			</div>
+		</form>
 	</div>
 </div>
