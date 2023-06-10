@@ -321,16 +321,20 @@ div.user-manager-window .value-plain {
 div.user-manager-window .group-box {
 	font-size: 0.75em; 
 	height: 80px; 
-	border: solid; 
+	border: solid var(--primary); 
 	width: 60%;
 	overflow-y: overlay;
+}
+
+div.user-manager-window .group-box .text {
+	color: black;
 }
 
 div.user-manager-window .characters-boundbox {
 	max-height: 180px;
 	height: 180px;
-	max-width: 540px;
-	border: solid;
+	max-width: 405px;
+	border: solid var(--primary);
 }
 
 div.user-manager-window .characters-container {
@@ -347,6 +351,7 @@ div.user-manager-window .character-box {
 	flex-direction: column;
 	align-items: center;
 	min-width: 125px;
+	max-width: 125px;
 	margin: 5px;
 	background: rgb(0,0,0,0.1);
 	border-radius: 8px;
@@ -355,16 +360,20 @@ div.user-manager-window .character-box {
 div.user-manager-window .character-box .character-img {
 	height: 75%; 
 	width: 100%;
+	margin: auto;
+	display: flex;
 }
 
 div.user-manager-window .character-box .character-img img {
 	border: none; 
 	display: block;
-	margin-left: auto;
-	margin-right:auto;
+	margin: auto;
+	width: 94%;
+	border-radius: 5px;
 }
 
-div.user-manager-window .character-box .label-plain {
+div.user-manager-window .character-box .label-character {
 	margin-top: auto;
 	margin-bottom:auto;
+	text-align: center;
 }

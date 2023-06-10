@@ -15,22 +15,42 @@ class UserManagerApp extends Application {
 		folders.forEach((f) => { 
 		    let characters = f.contents.filter((c) => (!c.isLoot && !c.name.startsWith('user') && c.hasPlayerOwner))
 		    characters.forEach((c) => {
-		            c.userGroup = { id: f.id, name: f.name };
-		            c.shortName = c.name.split(/\s/).shift();
-		            let owner = userList.find((u) => u.character === c.id )
-					if (!owner) {
-						owner = userList.find((u) => c.getUserLevel(u) === 3);	
-					}
-					if (owner) {
-			            c.owner = { id: owner.id, name: owner.name };					
-					}
-		            actors.push(c);
-		        });
+	            c.userGroup = { id: f.id, name: f.name };
+	            c.shortName = c.name.split(/\s/).shift();
+	            let owner = userList.find((u) => u.character === c.id )
+				if (!owner) {
+					owner = userList.find((u) => c.getUserLevel(u) === 3);	
+				}
+				if (owner) {
+		            c.owner = { id: owner.id, name: owner.name };					
+				}
+	        	actors.push(c);
+	        });
 		});
+
+		let nonFolderCharacters = game.actors.filter((a) => 
+			   !actors.map((aa) => aa.id).includes(a.id) 
+			&& !a.isLoot 
+			&& !a.name.startsWith('user') 
+			&& a.hasPlayerOwner
+		);
+
+		nonFolderCharacters.forEach((c) => {
+            c.shortName = c.name.split(/\s/).shift();
+            let owner = userList.find((u) => u.character === c.id )
+			if (!owner) {
+				owner = userList.find((u) => c.getUserLevel(u) === 3);	
+			}
+			if (owner) {
+	            c.owner = { id: owner.id, name: owner.name };					
+			}
+        	actors.push(c);
+        });
+		
 		actors = actors.filter((a) => Object.hasOwn(a, 'owner'));
 		
 		// actors = actors.filter((playerActor) => users.map((u) => u.character ).includes(playerActor.id));
-		let excluded = actors.filter((a) => a.userGroup.name === 'User Manager Exclude').map((a) => a.owner.id);
+		let excluded = actors.filter((a) => a?.userGroup?.name === 'User Manager Exclude').map((a) => a.owner.id);
 		let users = game.users.filter((u) => !excluded.includes(u.id) && !u.isGM);
 		users = users.map((u) => {
 			let handle = u.getFlag('user-manager','handle');
@@ -41,9 +61,12 @@ class UserManagerApp extends Application {
 		    let discord = u.getFlag('user-manager','discord');
 			let dateCreated = u.getFlag('user-manager','dateCreated') === null ? null : new Date(u.getFlag('user-manager','dateCreated')).toLocaleDateString();
 			let dateModified = u.getFlag('user-manager','dateModified') === null ? null : new Date(u.getFlag('user-manager','dateModified')).toLocaleDateString();
-			let groups = actors.filter((a) => a.owner.id === u.id ).map((a) => a.userGroup );
-			groups = [...new Map(groups.map((g) => [g.id, g])).values()];
-			let groupNames = groups.map((g) => g.name).join(', '); //u.getFlag('user-manager','groups').map((g) => g.name).join(', ');
+			let groups = actors.filter((a) => a.owner.id === u.id && Object.hasOwn(a, 'userGroup')).map((a) => a.userGroup );
+			let groupNames = '';
+			if (groups) {
+				groups = [...new Map(groups.map((g) => [g.id, g])).values()];	
+				groupNames = groups.map((g) => g.name).join(', '); //u.getFlag('user-manager','groups').map((g) => g.name).join(', ');
+			}
 			let characters = actors.filter((a) => a.owner.id === u.id);   //u.getFlag('user-manager','characters').map((c) => c.name).join(', ');
 			let characterNames = characters.map((c) => c.name);
 			return {
@@ -107,31 +130,48 @@ class UserManagerApp extends Application {
 		if (selectId === null) {
 			document.getElementById('select-name').value = null;
 			document.getElementById('select-role').value = null;
-			document.getElementById('select-role').background = 'transparent';
+			$('#select-role').attr('class', '');
 			document.getElementById('select-fname').value = null;
 			document.getElementById('select-lname').value = null;
 			document.getElementById('select-email').value = null;
 			document.getElementById('select-discord').value = null;
-			document.getElementById('select-created').innerHTML = 'Date Created';
-			document.getElementById('select-modified').innerHTML = 'Date Modified';			
+			document.getElementById('select-created').innerHTML = '&nbsp;';
+			document.getElementById('select-modified').innerHTML = '&nbsp;';
+			document.getElementById('select-groups').innerHTML = '';
+			document.getElementById('select-characters').innerHTML = `<div class="character-box">
+									<div class="character-img"><img src="systems/pf2e/icons/default-icons/character.svg"></div>
+									<div class="label-character">Character</div>
+								</div>`;
+
 		} else {
 			let user = this.state.users.find((u) => u.id === selectId );
 			document.getElementById('select-name').value = user.name;
-			// document.getElementById('select-role').value = user.role;
+
 			let role = [null,'player','trusted-player','assistant-gm','gm'][user.role]
 			document.getElementById('select-role').value = role;
 			$('#select-role').attr('class', '').addClass(role);
+
 			document.getElementById('select-fname').value = user.fname;
 			document.getElementById('select-lname').value = user.lname;
 			document.getElementById('select-email').value = user.email;
 			document.getElementById('select-discord').value = user.discord;	
 			document.getElementById('select-created').innerHTML = (user.dateCreated ?? '&nbsp;');
 			document.getElementById('select-modified').innerHTML = (user.dateModified ?? '&nbsp;');
+
 			let groupArr = '';
 			Array.from(user.groups).forEach((g) => {
 				groupArr = groupArr + `<div class="table-row"><div class="text" align="right">${g.name}</div></div>`
 			})
-			document.getElementById('select-groups').innerHTML = groupArr;		
+			document.getElementById('select-groups').innerHTML = groupArr;
+
+			let charArr = '';
+			Array.from(user.characters).forEach((c) => {
+				charArr = charArr + `<div class="character-box">
+										<div class="character-img"><img src="${c.img}"></div>
+										<div class="label-character">${c.name}</div>
+									</div>`
+			})
+			document.getElementById('select-characters').innerHTML = charArr;			
 		}
 	}
 
