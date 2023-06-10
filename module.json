@@ -14,7 +14,7 @@
 	 		"url": "https://github.com/dmarcuse"
 	 	}
     ],
-    "version": "0.1a",
+    "version": "0.1.1a",
     "compatibility": {
         "minimum": "10",
 	 	"verified": "10.291"
