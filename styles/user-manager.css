@@ -331,7 +331,7 @@ div.user-manager-window .group-box .text {
 }
 
 div.user-manager-window .characters-boundbox {
-	max-height: 180px;
+	max-height: 160px;
 	height: 180px;
 	max-width: 405px;
 	border: solid var(--primary);

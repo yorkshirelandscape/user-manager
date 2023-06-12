@@ -14,11 +14,11 @@
 
 	            {{#each users as | user | }}
 	            <div class="table-row" id="{{ user.id }}">
-	                <div class="text firstCol">{{ user.identifier }}</div>
-	                <div class="text other">{{ user.dateCreated }}</span></div>
-	                <div class="text">{{ user.dateModified }}</span></div>
-	                <div class="text">{{ user.groupNames }}</span></div>
-	                <div class="text">{{ user.characterNames }}</span></div>
+	                <div class="text firstCol"><span id="{{ user.id }}-name">{{ user.name }}</span></div>
+	                <div class="text other"><span id="{{ user.id }}-dateCreated">{{ user.dateCreated }}</span></div>
+	                <div class="text"><span id="{{ user.id }}-dateModified">{{ user.dateModified }}</span></div>
+	                <div class="text"><span id="{{ user.id }}-groupNames">{{ user.groupNames }}</span></div>
+	                <div class="text"><span id="{{ user.id }}-characterNames">{{ user.characterNames }}</span></div>
 	            </div>
 	            {{/each}}
 	        </div>
@@ -103,6 +103,12 @@
 						<div class="label-character">Character</div>
 					</div>
 				</div>
+			</div>
+			<div class="form-row" style="margin-top: 5px">
+				<button id="arc-btn-new">New User</button>
+				<button id="arc-btn-archive" style="margin-right: 20px">Archive</button>
+				<button id="arc-btn-apply">Apply</button>
+				<button id="arc-btn-cancel">Cancel</button>
 			</div>
 		</form>
 	</div>

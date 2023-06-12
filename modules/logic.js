@@ -49,13 +49,10 @@ class UserManagerApp extends Application {
 		
 		actors = actors.filter((a) => Object.hasOwn(a, 'owner'));
 		
-		// actors = actors.filter((playerActor) => users.map((u) => u.character ).includes(playerActor.id));
 		let excluded = actors.filter((a) => a?.userGroup?.name === 'User Manager Exclude').map((a) => a.owner.id);
 		let users = game.users.filter((u) => !excluded.includes(u.id) && !u.isGM);
 		users = users.map((u) => {
-			let handle = u.getFlag('user-manager','handle');
-		    let identifier = u.name + ( handle && handle !== u.name ? ` (${handle})` : '' );
-		    let fname = u.getFlag('user-manager','firstName');
+			let fname = u.getFlag('user-manager','firstName');
 		    let lname = u.getFlag('user-manager','lastName');
 		    let email = u.getFlag('user-manager','email');
 		    let discord = u.getFlag('user-manager','discord');
@@ -73,8 +70,6 @@ class UserManagerApp extends Application {
 				id: u.id,
 				role: u.role,
 				name: u.name,
-				handle: handle,
-				identifier: identifier,
 				fname: fname,
 				lname: lname,
 				email: email,
@@ -102,10 +97,6 @@ class UserManagerApp extends Application {
 			tabs
 		};
 		let r = document.querySelector(":root");
-		// r.style.setProperty("--user-manager-min-width", '66%');
-		// r.style.setProperty("--user-manager-min-height", '60%');
-		// r.style.setProperty("--user-manager-max-height", '66%');
-		// r.style.setProperty("--user-manager-max-width", '60%');
 	}
 
 	static get defaultOptions() {
@@ -128,41 +119,41 @@ class UserManagerApp extends Application {
 
 	displaySelected(selectId) {
 		if (selectId === null) {
-			document.getElementById('select-name').value = null;
-			document.getElementById('select-role').value = null;
+			$('#select-name').val(null);
+			$('#select-role').val(null);
 			$('#select-role').attr('class', '');
-			document.getElementById('select-fname').value = null;
-			document.getElementById('select-lname').value = null;
-			document.getElementById('select-email').value = null;
-			document.getElementById('select-discord').value = null;
-			document.getElementById('select-created').innerHTML = '&nbsp;';
-			document.getElementById('select-modified').innerHTML = '&nbsp;';
-			document.getElementById('select-groups').innerHTML = '';
-			document.getElementById('select-characters').innerHTML = `<div class="character-box">
+			$('#select-fname').val(null);
+			$('#select-lname').val(null);
+			$('#select-email').val(null);
+			$('#select-discord').val(null);
+			$('#select-created').html('&nbsp;');
+			$('#select-modified').html('&nbsp;');
+			$('#select-groups').html('');
+			$('#select-characters').html(`<div class="character-box">
 									<div class="character-img"><img src="systems/pf2e/icons/default-icons/character.svg"></div>
 									<div class="label-character">Character</div>
-								</div>`;
+								</div>`);
 
 		} else {
 			let user = this.state.users.find((u) => u.id === selectId );
-			document.getElementById('select-name').value = user.name;
+			$('#select-name').val(user.name);
 
 			let role = [null,'player','trusted-player','assistant-gm','gm'][user.role]
-			document.getElementById('select-role').value = role;
+			$('#select-role').val(role);
 			$('#select-role').attr('class', '').addClass(role);
 
-			document.getElementById('select-fname').value = user.fname;
-			document.getElementById('select-lname').value = user.lname;
-			document.getElementById('select-email').value = user.email;
-			document.getElementById('select-discord').value = user.discord;	
-			document.getElementById('select-created').innerHTML = (user.dateCreated ?? '&nbsp;');
-			document.getElementById('select-modified').innerHTML = (user.dateModified ?? '&nbsp;');
+			$('#select-fname').val(user.fname);
+			$('#select-lname').val(user.lname);
+			$('#select-email').val(user.email);
+			$('#select-discord').val(user.discord);	
+			$('#select-created').html(user.dateCreated ?? '&nbsp;');
+			$('#select-modified').html(user.dateModified ?? '&nbsp;');
 
 			let groupArr = '';
 			Array.from(user.groups).forEach((g) => {
 				groupArr = groupArr + `<div class="table-row"><div class="text" align="right">${g.name}</div></div>`
 			})
-			document.getElementById('select-groups').innerHTML = groupArr;
+			$('#select-groups').html(groupArr);
 
 			let charArr = '';
 			Array.from(user.characters).forEach((c) => {
@@ -171,8 +162,68 @@ class UserManagerApp extends Application {
 										<div class="label-character">${c.name}</div>
 									</div>`
 			})
-			document.getElementById('select-characters').innerHTML = charArr;			
+			$('#select-characters').html(charArr);			
 		}
+	}
+
+	getValues(userId) {
+		let uRole;
+		switch ($('#select-role').val()) {
+			case 'player': 
+				uRole = 1;
+				break;
+			case 'trusted-player': 
+				uRole = 2;
+				break;
+			case 'assistant-gm':
+				uRole = 3;
+				break;
+			case 'gm': 
+				uRole = 4;
+				break;
+		};
+		console.log('got values');
+		return (
+			{
+				id: userId,
+				name: $('#select-name').val(),
+				role: uRole,
+				fname: $('#select-fname').val(),
+				lname: $('#select-lname').val(),
+				email: $('#select-email').val(),
+				discord: $('#select-discord').val(),
+				dateModified: Date.now(),
+			}
+		)
+	}
+
+	async arcApply(data) {
+		let user = game.users.find((u) => u.id === data.id);
+		if (user) {
+			let updates = {
+				name: data.name,
+				role: data.role,
+				'flags.user-manager.name': data.name,
+				'flags.user-manager.role': data.role,
+				'flags.user-manager.fname': data.fname,
+				'flags.user-manager.lname': data.lname,
+				'flags.user-manager.email': data.email,
+				'flags.user-manager.discord': data.discord,
+				'flags.user-manager.email': data.email,
+				'flags.user-manager.dateModified': data.dateModified,
+			}
+			await user.update(updates);
+			this.update();
+			console.log('applied');
+		} else {
+			ui.notifications.warn('No user selected.');
+		}
+	}
+
+	redrawRow(data) {
+		$(`#${data.id}-name`).text(data.name);
+		$(`#${data.id}-dateModified`).text(data.dateModified);
+		console.log('redrawn');
 	}
 
 	getData() {
@@ -182,7 +233,7 @@ class UserManagerApp extends Application {
 
 	activateListeners(html) {
 		let self = this;
-
+	
 		$(".table-row").click(function() {
 			let selectId;
 			if ($(this).hasClass('selected')) {
@@ -192,13 +243,22 @@ class UserManagerApp extends Application {
 				$(this).addClass('selected').siblings().removeClass('selected');
 				selectId = $(this).attr('id');
 			}
-			console.log(selectId);
 			self.displaySelected(selectId);
+			self.state.selectedUser = selectId;
 		});
 		
 		$('#select-role').on('change', function(ev) {
 			console.log('success');
 		    $(this).attr('class', '').addClass($(this).children(':selected').val());
+		});
+
+		$('#arc-btn-apply').on('click', (event) => {
+			let userId = self.state.selectedUser;
+			let data = self.getValues(userId);
+			console.log(data);
+			self.arcApply(data);
+			self.redrawRow(data);
+			self.render(false);
 		});
 
 		super.activateListeners(html);
