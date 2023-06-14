@@ -52,8 +52,8 @@ class UserManagerApp extends Application {
 		let excluded = actors.filter((a) => a?.userGroup?.name === 'User Manager Exclude').map((a) => a.owner.id);
 		let users = game.users.filter((u) => !excluded.includes(u.id) && !u.isGM);
 		users = users.map((u) => {
-			let fname = u.getFlag('user-manager','firstName');
-		    let lname = u.getFlag('user-manager','lastName');
+			let firstName = u.getFlag('user-manager','firstName');
+		    let lastName = u.getFlag('user-manager','lastName');
 		    let email = u.getFlag('user-manager','email');
 		    let discord = u.getFlag('user-manager','discord');
 			let dateCreated = u.getFlag('user-manager','dateCreated') === null ? null : new Date(u.getFlag('user-manager','dateCreated')).toLocaleDateString();
@@ -70,8 +70,8 @@ class UserManagerApp extends Application {
 				id: u.id,
 				role: u.role,
 				name: u.name,
-				fname: fname,
-				lname: lname,
+				firstName: firstName,
+				lastName: lastName,
 				email: email,
 				discord: discord,
 				dateCreated: dateCreated,
@@ -118,12 +118,14 @@ class UserManagerApp extends Application {
 	}
 
 	displaySelected(selectId) {
-		if (selectId === null) {
+		console.log(selectId);
+		let user = this.state.users.find((u) => u.id === selectId );
+		if (!user) {
 			$('#select-name').val(null);
 			$('#select-role').val(null);
 			$('#select-role').attr('class', '');
-			$('#select-fname').val(null);
-			$('#select-lname').val(null);
+			$('#select-firstName').val(null);
+			$('#select-lastName').val(null);
 			$('#select-email').val(null);
 			$('#select-discord').val(null);
 			$('#select-created').html('&nbsp;');
@@ -135,15 +137,14 @@ class UserManagerApp extends Application {
 								</div>`);
 
 		} else {
-			let user = this.state.users.find((u) => u.id === selectId );
 			$('#select-name').val(user.name);
 
 			let role = [null,'player','trusted-player','assistant-gm','gm'][user.role]
 			$('#select-role').val(role);
 			$('#select-role').attr('class', '').addClass(role);
 
-			$('#select-fname').val(user.fname);
-			$('#select-lname').val(user.lname);
+			$('#select-firstName').val(user.firstName);
+			$('#select-lastName').val(user.lastName);
 			$('#select-email').val(user.email);
 			$('#select-discord').val(user.discord);	
 			$('#select-created').html(user.dateCreated ?? '&nbsp;');
@@ -182,39 +183,38 @@ class UserManagerApp extends Application {
 				uRole = 4;
 				break;
 		};
-		console.log('got values');
-		return (
-			{
-				id: userId,
-				name: $('#select-name').val(),
-				role: uRole,
-				fname: $('#select-fname').val(),
-				lname: $('#select-lname').val(),
-				email: $('#select-email').val(),
-				discord: $('#select-discord').val(),
-				dateModified: Date.now(),
-			}
-		)
+		return {
+					id: userId,
+					name: $('#select-name').val(),
+					role: uRole,
+					firstName: $('#select-firstName').val(),
+					lastName: $('#select-lastName').val(),
+					email: $('#select-email').val(),
+					discord: $('#select-discord').val(),
+					dateModified: new Date().toLocaleDateString(),
+				}
 	}
 
 	async arcApply(data) {
 		let user = game.users.find((u) => u.id === data.id);
 		if (user) {
+			console.log(data.dateModified);
 			let updates = {
 				name: data.name,
 				role: data.role,
 				'flags.user-manager.name': data.name,
 				'flags.user-manager.role': data.role,
-				'flags.user-manager.fname': data.fname,
-				'flags.user-manager.lname': data.lname,
+				'flags.user-manager.firstName': data.firstName,
+				'flags.user-manager.lastName': data.lastName,
 				'flags.user-manager.email': data.email,
 				'flags.user-manager.discord': data.discord,
 				'flags.user-manager.email': data.email,
 				'flags.user-manager.dateModified': data.dateModified,
 			}
+			console.log(user.getFlag('user-manager','dateModified'));
 			await user.update(updates);
 			this.update();
-			console.log('applied');
+			console.log(user.getFlag('user-manager','dateModified'));
 		} else {
 			ui.notifications.warn('No user selected.');
 		}
@@ -223,7 +223,6 @@ class UserManagerApp extends Application {
 	redrawRow(data) {
 		$(`#${data.id}-name`).text(data.name);
 		$(`#${data.id}-dateModified`).text(data.dateModified);
-		console.log('redrawn');
 	}
 
 	getData() {
@@ -248,17 +247,19 @@ class UserManagerApp extends Application {
 		});
 		
 		$('#select-role').on('change', function(ev) {
-			console.log('success');
 		    $(this).attr('class', '').addClass($(this).children(':selected').val());
 		});
 
-		$('#arc-btn-apply').on('click', (event) => {
+		$('#arc-btn-apply').on('click', async (event) => {
 			let userId = self.state.selectedUser;
 			let data = self.getValues(userId);
-			console.log(data);
-			self.arcApply(data);
+			await self.arcApply(data);
 			self.redrawRow(data);
-			self.render(false);
+			self.state.selectedUser = userId;
+		});
+
+		$('#arc-btn-cancel').on('click', (event) => {
+			self.displaySelected(self.state.selectedUser);	
 		});
 
 		super.activateListeners(html);
