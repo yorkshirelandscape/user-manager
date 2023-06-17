@@ -119,7 +119,6 @@ class UserManagerApp extends Application {
 	}
 
 	displaySelected(selectId) {
-		console.log(selectId);
 		let user = this.state.users.find((u) => u.id === selectId );
 		if (!user) {
 			$('#select-name').val(null);
@@ -331,9 +330,9 @@ class UserManagerApp extends Application {
 	activateListeners(html) {
 		let self = this;
 
-		$('*').click(function() {
-			console.log($(this)[0]);	
-		});
+		// $('*').click(function() {
+			// console.log($(this)[0]);
+		// });
 	
 		$('.left .table-row').click(function() {
 			let selectId;
@@ -351,7 +350,11 @@ class UserManagerApp extends Application {
 			$('#arc-btn-new').text('New User');	
 		});
 
-		$('.table-row.selectable').click(function() {
+		// $('.group-box').on('click', () => console.log('fail'));
+
+		// $('.table-row.selectable').on('click', () => console.log('win'));
+
+		$('.table-row.selectable').on('click', function() {
 			console.log('click');
 			let groupId;
 			if ($(this).hasClass('selected')) {

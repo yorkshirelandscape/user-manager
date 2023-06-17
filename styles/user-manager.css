@@ -120,16 +120,14 @@ div.user-manager-window .table-row .button {
 
 div.user-manager-window .table-row.header {
 	color: black;
-	font-style:
 }
 
 div.user-manager-window .table-row.selected {
 	background-color: var(--primary);
 }
 
-div.user-manager-window .table-row.selectable.selected {
-	background-color: var(--primary);
-}
+div.user-manager-window .table-row.selectable { 
+} 
 
 div.user-manager-window .table-row.selected .text {
 	color: var(--tertiary);
@@ -322,6 +320,7 @@ div.user-manager-window .group-box {
 	width: 60%;
 	overflow-y: overlay; 
 	border-radius: 8px;
+	z-index: 0;
 }
 
 div.user-manager-window .group-box .text {
