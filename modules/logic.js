@@ -81,7 +81,7 @@ class UserManagerApp extends Application {
 				characters: characters,
 				characterNames: characterNames,
 			}
-		});
+		}).sort((a,b) => a.name.localeCompare(b.name));
 
 		let tabs = {
 			active: { id: 'active',  label: 'Active', visible: true },
@@ -94,6 +94,7 @@ class UserManagerApp extends Application {
 			selectedUser: null,
 			actors: actors,
 			users: users,
+			groups: folders,
 			tabs
 		};
 		let r = document.querySelector(":root");
@@ -198,7 +199,6 @@ class UserManagerApp extends Application {
 	async arcApply(data) {
 		let user = game.users.find((u) => u.id === data.id);
 		if (user) {
-			console.log(data.dateModified);
 			let updates = {
 				name: data.name,
 				role: data.role,
@@ -211,10 +211,8 @@ class UserManagerApp extends Application {
 				'flags.user-manager.email': data.email,
 				'flags.user-manager.dateModified': data.dateModified,
 			}
-			console.log(user.getFlag('user-manager','dateModified'));
 			await user.update(updates);
 			this.update();
-			console.log(user.getFlag('user-manager','dateModified'));
 		} else {
 			ui.notifications.warn('No user selected.');
 		}
@@ -225,6 +223,106 @@ class UserManagerApp extends Application {
 		$(`#${data.id}-dateModified`).text(data.dateModified);
 	}
 
+	redrawTable() {
+		let template = `{{#each users as | user | }}
+		            <div class="table-row" id="{{ user.id }}">
+		                <div class="text firstCol"><span id="{{ user.id }}-name">{{ user.name }}</span></div>
+		                <div class="text other"><span id="{{ user.id }}-dateCreated">{{ user.dateCreated }}</span></div>
+		                <div class="text"><span id="{{ user.id }}-dateModified">{{ user.dateModified }}</span></div>
+		                <div class="text"><span id="{{ user.id }}-groupNames">{{ user.groupNames }}</span></div>
+		                <div class="text"><span id="{{ user.id }}-characterNames">{{ user.characterNames }}</span></div>
+		            </div>
+		            {{/each}}`;
+		let compiled = Handlebars.compile(template);
+		$('#userTable').html(compiled(this.state));
+	}
+
+	async createUser(data) {
+		if (data.name && data.role) {
+			let actor = await Actor.implementation.create( {
+		        name: data.name.trim(),
+		        type: "character",
+		    } );
+
+			let newUser = await User.create( {
+				name: data.name.trim(), 
+				role: data.role, 
+				character: actor,
+			} );
+
+			let userId = newUser.id;
+	        let permissions = actor.data.permission;
+	        permissions[userId] = 3;
+	        await actor.update({
+	            permission: permissions
+	        });
+
+			if (newUser) {
+				let updates = {
+					'flags.user-manager.name': data.name,
+					'flags.user-manager.role': data.role,
+					'flags.user-manager.firstName': data.firstName,
+					'flags.user-manager.lastName': data.lastName,
+					'flags.user-manager.email': data.email,
+					'flags.user-manager.discord': data.discord,
+					'flags.user-manager.email': data.email,
+					'flags.user-manager.dateCreated': new Date().toLocaleDateString(),
+					'flags.user-manager.dateModified': data.dateModified,
+				}
+				await newUser.update(updates);
+				this.update();
+			}
+			this.redrawTable();
+	        ui.notifications.info(`User ${newUser.name} created.`)
+			return newUser;
+
+		} else {
+			ui.notifications.warn('Name and Role are required.')
+		}
+	}
+
+	toggleInputs(showHide) {
+		if (showHide === 'show') {
+			$('#form-inputs :input').attr('disabled',false);
+			$('#form-inputs').removeClass('inactive');
+		} else if (showHide === 'hide') {
+			$('#form-inputs :input').attr('disabled',true);
+			$('#form-inputs').addClass('inactive');
+		} else {
+			if ($('#form-inputs :input').is(':disabled')) {
+				$('#form-inputs :input').attr('disabled',false);
+				$('#form-inputs').removeClass('inactive');
+			} else {
+				$('#form-inputs :input').attr('disabled', true);
+				$('#form-inputs').addClass('inactive');
+			}
+		}
+	}
+
+	toggleGroupPicker(showHide) {
+		if (showHide === 'show') {
+			let folders = game.folders.filter((f) => f.type === 'Actor');
+			let groupArr = '';
+			Array.from(folders).forEach((g) => {
+				groupArr = groupArr + `<div class="table-row selectable" id=${g.id}><div class="text" align="right">${g.name}</div></div>`
+			});
+			$('#select-groups').html(groupArr);	
+		} else if (showHide === 'hide') {
+			$('#select-groups').html('');
+		} else {
+			if ($('#arc-btn-new').html() === 'Create') {
+				let folders = game.folders.filter((f) => f.type === 'Actor');
+				let groupArr = '';
+				Array.from(folders).forEach((g) => {
+					groupArr = groupArr + `<div class="table-row selectable" id=${g.id}><div class="text" align="right">${g.name}</div></div>`
+				});
+				$('#select-groups').html(groupArr);	
+			} else {
+				$('#select-groups').html('');
+			}	
+		}
+	}
+
 	getData() {
 		this.update();
 		return this.state;
@@ -232,22 +330,43 @@ class UserManagerApp extends Application {
 
 	activateListeners(html) {
 		let self = this;
+
+		$('*').click(function() {
+			console.log($(this)[0]);	
+		});
 	
-		$(".table-row").click(function() {
+		$('.left .table-row').click(function() {
 			let selectId;
 			if ($(this).hasClass('selected')) {
 				$(this).removeClass('selected');
-				selectId = null;	
+				selectId = null;
+				self.toggleInputs('hide');
 			} else {
 				$(this).addClass('selected').siblings().removeClass('selected');
 				selectId = $(this).attr('id');
+				self.toggleInputs('show');
 			}
 			self.displaySelected(selectId);
 			self.state.selectedUser = selectId;
+			$('#arc-btn-new').text('New User');	
+		});
+
+		$('.table-row.selectable').click(function() {
+			console.log('click');
+			let groupId;
+			if ($(this).hasClass('selected')) {
+				$(this).removeClass('selected');
+				groupId = null;
+			} else {
+				$(this).addClass('selected').siblings().removeClass('selected');
+				groupId = $(this).attr('id');
+			}
+			console.log(groupId);
+			self.state.selectedGroup = groupId;
 		});
 		
 		$('#select-role').on('change', function(ev) {
-		    $(this).attr('class', '').addClass($(this).children(':selected').val());
+		    $(this).attr('class', '').addClass($(this).children(':selected').val());		    
 		});
 
 		$('#arc-btn-apply').on('click', async (event) => {
@@ -259,10 +378,37 @@ class UserManagerApp extends Application {
 		});
 
 		$('#arc-btn-cancel').on('click', (event) => {
-			self.displaySelected(self.state.selectedUser);	
+			if (this.state.selectedUser) {
+				self.displaySelected(self.state.selectedUser);	
+			} else {
+				$('#arc-btn-new').html('New User');
+				this.toggleInputs('hide');
+				this.toggleGroupPicker('hide');
+			}
+		});
+
+		$('#arc-btn-new').on('click', function(event) {
+			if ($(this).html() === 'New User') {
+				self.displaySelected(null);
+				self.toggleInputs('show');
+				$(`#${self.state.selectedUser}`).removeClass('selected');
+				self.state.selectedUser = null;	
+				$(this).html('Create');
+				self.toggleGroupPicker('show');	
+			} else if ($(this).html() === 'Create') {				
+				let data = self.getValues(null);
+				if (data.name && data.role) {
+					self.createUser(data);
+					self.toggleInputs('hide');
+					self.toggleGroupPicker('hide');
+				} else {
+					ui.notifications.warn('User Name and Role are required.')
+				}
+			}
 		});
 
 		super.activateListeners(html);
+		game.userManager.toggleInputs('hide');
 	}
 
 	render(force, options) {

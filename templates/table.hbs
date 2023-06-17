@@ -11,16 +11,17 @@
 	                <div class="text">Group(s)</div>
 	                <div class="text">Character(s)</div>
 	            </div>
-
-	            {{#each users as | user | }}
-	            <div class="table-row" id="{{ user.id }}">
-	                <div class="text firstCol"><span id="{{ user.id }}-name">{{ user.name }}</span></div>
-	                <div class="text other"><span id="{{ user.id }}-dateCreated">{{ user.dateCreated }}</span></div>
-	                <div class="text"><span id="{{ user.id }}-dateModified">{{ user.dateModified }}</span></div>
-	                <div class="text"><span id="{{ user.id }}-groupNames">{{ user.groupNames }}</span></div>
-	                <div class="text"><span id="{{ user.id }}-characterNames">{{ user.characterNames }}</span></div>
-	            </div>
-	            {{/each}}
+				<section id="userTable">
+		            {{#each users as | user | }}
+		            <div class="table-row" id="{{ user.id }}">
+		                <div class="text firstCol"><span id="{{ user.id }}-name">{{ user.name }}</span></div>
+		                <div class="text other"><span id="{{ user.id }}-dateCreated">{{ user.dateCreated }}</span></div>
+		                <div class="text"><span id="{{ user.id }}-dateModified">{{ user.dateModified }}</span></div>
+		                <div class="text"><span id="{{ user.id }}-groupNames">{{ user.groupNames }}</span></div>
+		                <div class="text"><span id="{{ user.id }}-characterNames">{{ user.characterNames }}</span></div>
+		            </div>
+		            {{/each}}
+	            </section>
 	        </div>
 	        <!-- Archive -->
 	        <div class="tab" data-tab="archive" data-group="party">
@@ -41,65 +42,68 @@
 	    </section>
 	</div>
 	<div class="right">
-		<div class="form-row">
-			<div class="input-field" width="60%">
-				<input type="text" id="select-name" placeholder="&nbsp;"/>
-				<label for="select-name" class="placeholder">User Name</label>
+		<div id="form-inputs">
+			<div class="form-row">
+				<div class="input-field" width="60%">
+					<input type="text" id="select-name" placeholder="&nbsp;"/>
+					<label for="select-name" class="placeholder">User Name</label>
+				</div>
+				<div width="40%" class="input-field">
+					<select float="right" id="select-role" class>
+					    <option disabled selected value=></option>
+					    <option value="player">Player</option>
+					    <option value="trusted-player">Trusted Player</option>
+					    <option value="assistant-gm">Assistant GM</option>
+					    <option value="gm">GM</option>
+					</select>
+					<label for="select-role" class="placeholder">Role</label>
+				</div>
 			</div>
-			<div width="40%" class="input-field">
-				<select float="right" id="select-role">
-				    <option disabled selected value></option>
-				    <option value="player">Player</option>
-				    <option value="trusted-player">Trusted Player</option>
-				    <option value="assistant-gm">Assistant GM</option>
-				    <option value="gm">GM</option>
-				</select>
+			<div class="form-row">
+				<div class="input-field" style="max-width: 40%; margin-right: 10px">
+					<input type="text" id="select-firstName" placeholder="&nbsp;"/>
+					<label for="select-firstName" class="placeholder">First Name</label>
+				</div>
+				<div class="input-field" style="max-width: 40%; margin-right: auto">
+					<input type="text" id="select-lastName" placeholder="&nbsp;"/>
+					<label for="select-lastName" class="placeholder">Last Name</label>
+				</div>
 			</div>
-		</div>
-		<div class="form-row">
-			<div class="input-field" style="max-width: 40%; margin-right: 10px">
-				<input type="text" id="select-firstName" placeholder="&nbsp;"/>
-				<label for="select-firstName" class="placeholder">First Name</label>
+			<div class="form-row">
+				<div class="input-field" style="width: calc(80% + 10px)">
+					<input type="text" id="select-email" placeholder="&nbsp;"/>
+					<label for="select-email" class="placeholder">Email Address</label>
+				</div>
 			</div>
-			<div class="input-field" style="max-width: 40%; margin-right: auto">
-				<input type="text" id="select-lastName" placeholder="&nbsp;"/>
-				<label for="select-lastName" class="placeholder">Last Name</label>
+			<div class="form-row">
+				<div class="input-field" style="width: 60%">
+					<input type="text" id="select-discord" placeholder="&nbsp;"/>
+					<label for="select-discord" class="placeholder">Discord</label>
+				</div>
+				<div>
+					<span class="label-plain" style="position: absolute; transform: translate(-50px, 35px)">Groups</span>
+				</div>
 			</div>
-		</div>
-		<div class="form-row">
-			<div class="input-field" style="width: calc(80% + 10px)">
-				<input type="text" id="select-email" placeholder="&nbsp;"/>
-				<label for="select-email" class="placeholder">Email Address</label>
+			<div class="form-row">
+				<div class="align-rt">
+					<span class="label-plain">Created:</span>
+					<span class="label-plain">Modified:</span>
+					<span class="label-plain" style="transform: translateY(23px)">Characters</span>
+				</div>
+				<div class="align-rt" style="margin-right: 10px; margin-left: 10px">
+					<span class="value-plain" id="select-created">&nbsp;</span>
+					<span class="value-plain" id="select-modified">&nbsp;</span>
+					<span>&nbsp;</span>
+				</div>
+					<div class="group-box" id="select-groups">
+				</div>
 			</div>
-		</div>
-		<div class="form-row">
-			<div class="input-field" style="width: 60%">
-				<input type="text" id="select-discord" placeholder="&nbsp;"/>
-				<label for="select-discord" class="placeholder">Discord</label>
-			</div>
-			<div>
-				<span class="label-plain" style="position: absolute; transform: translate(-50px, 35px)">Groups</span>
-			</div>
-		</div>
-		<div class="form-row">
-			<div class="align-rt">
-				<span class="label-plain">Created:</span>
-				<span class="label-plain">Modified:</span>
-				<span class="label-plain" style="transform: translateY(23px)">Characters</span>
-			</div>
-			<div class="align-rt" style="margin-right: 10px; margin-left: 10px">
-				<span class="value-plain" id="select-created">&nbsp;</span>
-				<span class="value-plain" id="select-modified">&nbsp;</span>
-				<span>&nbsp;</span>
-			</div>
-				<div class="group-box" id="select-groups">
-			</div>
-		</div>
-		<div class="characters-boundbox">
-			<div class="characters-container" id="select-characters">
-				<div class="character-box">
-					<div class="character-img"><img src="systems/pf2e/icons/default-icons/character.svg"></div>
-					<div class="label-character">Character</div>
+			<div class="characters-boundbox">
+				<div class="characters-container" id="select-characters">
+					<div class="character-box">
+						<div class="character-img"><img src="systems/pf2e/icons/default-icons/character.svg"></div>
+						<div class="label-character">Character</div>
+					</div>
 				</div>
 			</div>
 		</div>

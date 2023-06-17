@@ -1,17 +1,9 @@
 :root {
 	--user-manager-min-width: 60vw; 
-	/* --user-manager-min-height: 60vh;
-	--user-manager-max-height: 66%;
-	--select-border: #777;
- 	--select-focus: IndianRed;
- 	--select-arrow: var(--select-border); */
 }
 
 div.user-manager-window {
-	/* min-height: var(--user-manager-min-height); */
 	min-width: var(--user-manager-min-width); 
-	/* max-height: var(--user-manager-max-height); */
-	/* max-width: var(--user-manager-max-width); */
 }
 
 div.user-manager-window nav.tabs {
@@ -135,6 +127,10 @@ div.user-manager-window .table-row.selected {
 	background-color: var(--primary);
 }
 
+div.user-manager-window .table-row.selectable.selected {
+	background-color: var(--primary);
+}
+
 div.user-manager-window .table-row.selected .text {
 	color: var(--tertiary);
 }
@@ -176,7 +172,8 @@ div.user-manager-window .input-field input {
 	border-radius: 0;
 }
 
-div.user-manager-window .input-field .placeholder {
+div.user-manager-window .input-field .placeholder,
+dis.user-manager-window select .placeholder {
 	position: absolute;
 	left: var(--field-padding);
 	bottom: 50%; 
@@ -190,8 +187,9 @@ div.user-manager-window .input-field .placeholder {
  	transition: all 0.3s ease;
  }
 
-.input-field input:not(:placeholder-shown) + .placeholder,
-.input-field input:focus + .placeholder { 
+div.user-manager-window .input-field input:not(:placeholder-shown) + .placeholder,
+div.user-manager-window .input-field input:focus + .placeholder,
+div.user-manager-window .input-field select:not([class=""]) + .placeholder { 
  	top: 28px; 
  	font-size: 12px;
 }
@@ -199,9 +197,6 @@ div.user-manager-window .input-field .placeholder {
 
 div.user-manager-window select {
 	border: 1px solid var(--primary);
-	/* border-top: none; */
-	/* border-right: none; */
-	/* border-left: none; */
 	border-radius: 15px;
 	background: transparent; 
 	color: var(--tertiary);
@@ -290,15 +285,17 @@ div.user-manager-window .split .right {
 	width: 40%;
 }
 
+div.user-manager-window .inactive {
+	background: rgb(0,0,0,0.1);
+	border-radius: 8px;
+}
+
 div.user-manager-window .split .right .form-row {
 	display: flex;
 	justify-content: space-between;
 	padding-bottom: 1em;
 }
 
-/* div.user-manager-window .split .right .form-row .baseline { */
-	/* align-items: baseline; */
-/* } */
 
 div.user-manager-window .align-rt {
 	display: flex; 
@@ -323,7 +320,8 @@ div.user-manager-window .group-box {
 	height: 80px; 
 	border: solid var(--primary); 
 	width: 60%;
-	overflow-y: overlay;
+	overflow-y: overlay; 
+	border-radius: 8px;
 }
 
 div.user-manager-window .group-box .text {
@@ -335,6 +333,7 @@ div.user-manager-window .characters-boundbox {
 	height: 180px;
 	max-width: 405px;
 	border: solid var(--primary);
+	border-radius: 8px;
 }
 
 div.user-manager-window .characters-container {
