@@ -1,4 +1,4 @@
-mod{
+{
     "id": "user-manager",
     "title": "User Manager",
     "description": "A supplemental user manager for Foundry VTT.",
